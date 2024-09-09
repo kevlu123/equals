@@ -218,7 +218,7 @@ struct Program {
             return;
         }
 
-        std::thread([this, result]() mutable {
+        std::thread([this, result = std::move(result)]() mutable {
             std::ifstream file(result.path, std::ios::binary | std::ios::ate);
             if (!file) {
                 result.error = L"Failed to open file";
@@ -247,7 +247,7 @@ struct Program {
                 if (newProgress - progress > 0.01f) {
 					progress = newProgress;
                     result.crc = Progress((float)totalRead / size);
-                    StoreResult(result);
+                    PostResult(result);
 				}
 
                 totalRead += read;
